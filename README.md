@@ -52,7 +52,7 @@ ssh-lab/
 
 ## 📂 Documentation Breakdown
 
-- [`linux/ssh-server-setup.md`](linux/ssh-server-setup.md): SSH server installation and setup on Ubuntu Server
+- [`linux/linux-ssh-server-setup.md`](linux/linux-ssh-server-setup.md): SSH server installation and setup on Ubuntu Server
 - [`linux/ssh-client-usage.md`](linux/ssh-client-usage.md): Key generation and SSH connection from Ubuntu Desktop
 - [`linux/ssh-hardening.md`](linux/ssh-hardening.md): SSH hardening steps including systemd override fix
 - [`windows/openssh-installation.md`](windows/openssh-installation.md): OpenSSH server installation and setup on Windows
