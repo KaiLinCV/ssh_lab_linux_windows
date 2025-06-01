@@ -108,7 +108,7 @@ A custom banner provides a warning or legal disclaimer before login, informing u
 
 I created a file called `custom_ssh_banner.txt` containing a short compliance message similar to what you might see in enterprise environments.
 
-![Custom Banner File](./screenshots/linux/06_ssh_custom_banner.png)
+![Custom Banner File](~/screenshots/linux/06_ssh_custom_banner.png)
 
 
 ---
