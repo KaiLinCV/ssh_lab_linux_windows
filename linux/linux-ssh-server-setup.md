@@ -24,7 +24,7 @@ Because the Ubuntu Desktop was a fresh installation, I updated the system to ens
 sudo apt update
 ```
 
-![Apt Update](./screenshots/linux/01_sudo_apt_update.png)
+![Apt Update](./screenshots/01_sudo_apt_update.png)
 
 Because there were 112 packages available for upgrade, I ran the following command to apply them:
 ```bash
@@ -48,8 +48,8 @@ Or:
 ifconfig
 ```
 
-![ip grep](./screenshots/linux/02_ip_grep.png)
-![ifconfig](./screenshots/linux/02_ifconfig.png)
+![ip grep](./screenshots/02_ip_grep.png)
+![ifconfig](./screenshots/02_ifconfig.png)
 
 ---
 
@@ -60,12 +60,12 @@ ssh kailin@192.168.xxx.xxx
 ```
 When prompted about the host fingerprint, I typed `yes` to continue. 
 
-![SSH First Time](./screenshots/linux/03_SSH_first_time.png)
-![SSH Log To Server](./screenshots/linux/03_SSH_log_to_server.png)
+![SSH First Time](./screenshots/03_SSH_first_time.png)
+![SSH Log To Server](./screenshots/03_SSH_log_to_server.png)
 
 After logging in, I checked the Ubuntu Server’s /var/log/auth.log file to confirm the login attempt was recorded successfully:
 
-![Server Auth.log](./screenshots/linux/03_server_auth_log.png)
+![Server Auth.log](./screenshots/03_server_auth_log.png)
 
 At this point, I had successfully connected from one Linux system to another. However, repeatedly entering the password can be inconvenient. A more secure and efficient method is to use SSH key-based authentication.
 
@@ -83,13 +83,13 @@ ssh-keygen -t rsa -b 4096 -C "kailin@UbuntuDesktop"
 
 Additionally, I entered a passphrase to increase the security of the login process.
 
-![SSH Key Gen](./screenshots/linux/04_SSH_keygen.png)
+![SSH Key Gen](./screenshots/04_SSH_keygen.png)
 
 Next, I copied the public key to the Ubuntu Server:
 ```bash
 ssh-copy-id kailin@192.168.xxx.xxx
 ```
-![SSH Key Gen](./screenshots/linux/04_ssh_copy_id.png)
+![SSH Key Gen](./screenshots/04_ssh_copy_id.png)
 
 ---
 
@@ -100,9 +100,9 @@ ssh kailin@192.168.xxx.xxx
 ```
 This time, I was prompted for the key passphrase instead of the server password, confirming that key-based authentication was working.
 
-![Passphrase](./screenshots/linux/05_ssh_login_passphrase.png)
-![SSH Login](./screenshots/linux/05_ssh_login_success.png)
-![Server Auth.log](./screenshots/linux/05_ssh_server_auth.png)
+![Passphrase](./screenshots/05_ssh_login_passphrase.png)
+![SSH Login](./screenshots/05_ssh_login_success.png)
+![Server Auth.log](./screenshots/05_ssh_server_auth.png)
 
 ---
 

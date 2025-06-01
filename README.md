@@ -30,17 +30,14 @@ This project demonstrates how to set up and use SSH (Secure Shell) across both L
 ssh-lab/
 ├── README.md
 ├── linux/
-│   ├── ssh-server-setup.md
-│   ├── ssh-client-usage.md
-│   ├── ssh-hardening.md
+│   ├── screenshots/
+│   ├── linux-ssh-server-setup.md
+│   ├── linux-ssh-hardening.md
 ├── windows/
+│   ├── screenshots/
 │   ├── openssh-installation.md
 │   ├── powershell-ssh.md
 │   └── putty-usage.md
-├── screenshots/
-│   ├── linux-ssh-login.png
-│   ├── windows-powershell-ssh.png
-│   └── config-example.png
 └── config/
     ├── sshd_config_linux_example
     └── authorized_keys_example

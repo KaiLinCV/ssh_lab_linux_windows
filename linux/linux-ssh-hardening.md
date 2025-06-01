@@ -108,7 +108,7 @@ A custom banner provides a warning or legal disclaimer before login, informing u
 
 I created a file called `custom_ssh_banner.txt` containing a short compliance message similar to what you might see in enterprise environments.
 
-![Custom Banner File](~/screenshots/linux/06_ssh_custom_banner.png)
+![Custom Banner File](./screenshots/06_ssh_custom_banner.png)
 
 
 ---
@@ -141,7 +141,7 @@ ssh -p 2222 kailin@192.168.xxx.xxx
 
 However, I encountered a critical issue: **"Connection refused."**
 
-![Connection Refused](./screenshots/linux/07_ssh_connection_refused.png)
+![Connection Refused](./screenshots/07_ssh_connection_refused.png)
 
 Even though the SSH configuration had been updated and I had restarted the SSH service with: `sudo systemctl restart ssh`, the server was still **not listening on port 2222**. 
 To confirm this, I ran:
@@ -150,7 +150,7 @@ To confirm this, I ran:
 ss -tuln | grep 2222
 ```
 
-![Port Not Used](./screenshots/linux/07_tuln_grep_2222.png)
+![Port Not Used](./screenshots/07_tuln_grep_2222.png)
 
 The command returned no output, indicating that **port 2222 was not in use**, despite the changes made in the config file.
 
@@ -169,7 +169,7 @@ grep -in "Port" /etc/ssh/sshd_config
 ```
 
 This returned:
-![Grep Port](./screenshots/linux/07_grep_port.png)
+![Grep Port](./screenshots/07_grep_port.png)
 
 ```
 14:Port 2222
@@ -183,7 +183,7 @@ Which confirmed that port 2222 was properly defined and uncommented in the file.
 
 Next, I checked the firwall status by using `sudo ufw status` to see if there are any issues.
 
-![ufw status](./screenshots/linux/07_ssh_ufw_status.png)
+![ufw status](./screenshots/07_ssh_ufw_status.png)
 
 Output showed that port 2222 was allowed and port 22 had been removed. This confirmed that UFW was not blocking my custom port.
 
@@ -210,7 +210,7 @@ sudo sshd -t
 
 It returned no errors, confirming that the configuration syntax was valid.
 
-![sshd T](./screenshots/linux/07_sshd_T.png)
+![sshd T](./screenshots/07_sshd_T.png)
 
 
 ---
@@ -219,7 +219,7 @@ It returned no errors, confirming that the configuration syntax was valid.
 
 I confirmed the permissions of `sshd_config`:
 
-![sshd Permission](./screenshots/linux/07_sshd_config_permission.png)
+![sshd Permission](./screenshots/07_sshd_config_permission.png)
 
 The permissions were correct and not preventing the SSH service from reading the config.
 
@@ -229,7 +229,7 @@ The permissions were correct and not preventing the SSH service from reading the
 
 Once again, I checked whether the system was actually listening on port 2222:
 
-![Port Not Used](./screenshots/linux/07_tuln_grep_2222.png)
+![Port Not Used](./screenshots/07_tuln_grep_2222.png)
 
 Unfortunately, this returned nothing, confirming that SSH was **still not listening** on the custom port.
 
@@ -248,7 +248,7 @@ sudo systemctl restart ssh | journalctl -xe | grep sshd
 - `journalctl -xe`: shows the system journal logs in detail (with recent errors and warnings)
 - `grep sshd`: filters output to only show entries related to the SSH daemon
 
-![Listening Port 22](./screenshots/linux/07_listening_port_22.png)
+![Listening Port 22](./screenshots/07_listening_port_22.png)
 
 The logs revealed that SSH was **still binding to port 22** — despite all configuration pointing to 2222.
 
@@ -262,7 +262,7 @@ At this point, I suspected the issue was with the way the SSH service was being 
 systemctl cat ssh
 ```
 
-![systemctl cat ssh](./screenshots/linux/07_cat_ssh.png)
+![systemctl cat ssh](./screenshots/07_cat_ssh.png)
 
 The result showed that `ExecStart` was defined as `ExecStart=/usr/sbin/sshd -D $SSHD_OPTS`
 This means the systemd was using the $SSHD_OPTS as the variable to provide additional configuration options, such as pointing to the correct SSH config file. However, $SSHD_OPTS was likely undefined or empty, meaning the SSH daemon started without explicitly using the updated configuration I had set in /etc/ssh/sshd_config.
@@ -286,7 +286,7 @@ ExecStart=
 ExecStart=/usr/sbin/sshd -D -f /etc/ssh/sshd_config
 ```
 
-![SSH Override](./screenshots/linux/07_ssh_Override.png)
+![SSH Override](./screenshots/07_ssh_Override.png)
 
 The first `ExecStart=` line is intentionally left empty to clear any previous `ExecStart` directives. This prevents systemd from throwing a conflict error due to multiple `ExecStart` entries, which is only allowed for `Type=oneshot` services.
 Then, instead of using `$SSHD_OPTS`, I directly specified the config file using `-f /etc/ssh/sshd_config` to ensure that the SSH daemon explicitly loads the correct configuration file.
@@ -309,12 +309,12 @@ Once again, I verified that SSH was finally listening on port 2222:
 sudo ss -tuln | grep 2222
 ```
 
-![Issue Solved](./screenshots/linux/07_issue_solved.png)
+![Issue Solved](./screenshots/07_issue_solved.png)
 
 
 ✅ This time, the port was **successfully being used**. I opened a new terminal in my Ubuntu Desktop and was able to connect using the custom SSH port.
 
-![Log In Success](./screenshots/linux/08_LoggedIn.png)
+![Log In Success](./screenshots/08_LoggedIn.png)
 
 ---
 
