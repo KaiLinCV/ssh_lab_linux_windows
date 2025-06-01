@@ -53,8 +53,7 @@ ssh-lab/
 ## 📂 Documentation Breakdown
 
 - [`linux/linux-ssh-server-setup.md`](linux/linux-ssh-server-setup.md): SSH server installation and setup on Ubuntu Server
-- [`linux/ssh-client-usage.md`](linux/ssh-client-usage.md): Key generation and SSH connection from Ubuntu Desktop
-- [`linux/ssh-hardening.md`](linux/ssh-hardening.md): SSH hardening steps including systemd override fix
+- [`linux/ssh-hardening.md`](linux/linux-ssh-hardening.md): SSH hardening steps including systemd override fix
 - [`windows/openssh-installation.md`](windows/openssh-installation.md): OpenSSH server installation and setup on Windows
 - [`windows/powershell-ssh.md`](windows/powershell-ssh.md): SSH client usage via PowerShell
 - [`windows/putty-usage.md`](windows/putty-usage.md): (Optional) GUI-based SSH using PuTTY
@@ -63,8 +62,3 @@ ssh-lab/
 
 All screenshots used in documentation can be found in the [`screenshots/`](screenshots/) folder.
 
-## 🧾 Config Files
-
-Example SSH configuration files are available in [`config/`](config/):
-- `sshd_config_linux_example`
-- `authorized_keys_example`
