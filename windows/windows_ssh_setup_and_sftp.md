@@ -7,7 +7,7 @@ My goal for this portion of the lab is to gain hands-on experience with **cross-
 
 ## ⚙️ SSH Server Installation on Windows
 
-Since this was my first time using SSH on my Windows 11 Pro system, I began by checking whether both the **OpenSSH Client** and **OpenSSH Server** features were installed through the use of powershell:
+Since this was my first time using SSH on my Windows 11 Pro system, I began by checking whether both the **OpenSSH Client** and **OpenSSH Server** features were installed using PowerShell:
 
 ```powershell
 Get-WindowsCapability -Online | Where-Object Name -like 'OpenSSH*'
@@ -18,10 +18,9 @@ The output showed that **OpenSSH.Client** was already installed, but **OpenSSH.S
 
 To install the SSH server, I ran:
 
-  ```powershell
-  Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
-  ```
-
+```powershell
+Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0
+```
 ![Installed SSH Server](./screenshots/01_install_ssh_server.png)
 
 Although Windows allows enabling the SSH server to start automatically on boot, I intentionally chose not to enable auto-start.
@@ -29,10 +28,9 @@ This decision helps reduce the attack surface and limits the exposure window wit
 
 Instead, I manually start the SSH server only when needed:
 
-  ```powershell
-  Start-Service sshd
-  ```
-
+```powershell
+Start-Service sshd
+```
 ![Server Start](./screenshots/02_start_ssh_server.png)
 
 ---
@@ -40,15 +38,13 @@ Instead, I manually start the SSH server only when needed:
 ## 🛡️ Firewall Rule Verification
 
 The next step was to check whether **Windows Defender Firewall** was blocking SSH connections.  
-I know that by default, Windows Firewall may block **port 22** unless it's explicitly allowed.
-However, instead of blindly enabling new firewall rules, I first verified the existing ones by running:
+By default, Windows Firewall may block **port 22** unless it's explicitly allowed.
 
+Rather than blindly enabling new firewall rules, I first verified the existing ones by running:
 
-  ```powershell
-  Get-NetFirewallRule -DisplayName "*OpenSSH*"
-
-  ```
-
+```powershell
+Get-NetFirewallRule -DisplayName "*OpenSSH*"
+```
 ![Check Firewall](./screenshots/03_check_firewall_and_port.png)
 
 From the output, I confirmed that the OpenSSH SSH Server (sshd) rule was already active and allowing inbound connections on port 22.
@@ -58,13 +54,11 @@ From the output, I confirmed that the OpenSSH SSH Server (sshd) rule was already
 ## 🌐 Finding the Correct IP Address
 
 In order to connect to my Windows system using SSH, I needed to find its IP address.  
-While using `ipconfig` alone is enough, the output includes a lot of extra information.  
-To narrow it down to just the relevant lines, I used `ipconfig` along with `findstr` to search for lines containing "IPv4":
+While using `ipconfig` alone works, the output includes a lot of extra information. To narrow it down, I used:
 
   ```powershell
   ipconfig | findstr /R "IPv4"
   ```
-
 ![Check IP](./screenshots/04_check_windows_ip.png)
 
 An unexpected result occurred: I saw three different IPv4 addresses.
@@ -72,11 +66,10 @@ This was due to multiple Linux VMs I had previously run using VirtualBox, which 
 
 To identify the correct IP address for the active physical adapter, I ran:
 
-  ```powershell
-  Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -notlike "169.*"} | Format-Table InterfaceAlias, IPAddress
-  Get-NetAdapter | Where-Object {$_.Status -eq "Up"}
-  ```
-
+```powershell
+Get-NetIPAddress -AddressFamily IPv4 | Where-Object {$_.IPAddress -notlike "169.*"} | Format-Table InterfaceAlias, IPAddress
+Get-NetAdapter | Where-Object {$_.Status -eq "Up"}
+```
 ![Check Which IP](./screenshots/04_check_which_ethernet.png)
 
 From the results, I determined that `Ethernet 2` was the main physical adapter, while `Ethernet 3` and `Ethernet 4` were VirtualBox virtual interfaces.
@@ -89,9 +82,9 @@ To maintain a clean separation between personal use and home lab activity, I cre
 
 The account was created using PowerShell:
 
-  ```powershell
-  net user Homelab StrongPassword123! /add
-  ```
+```powershell
+net user Homelab StrongPassword123! /add
+```
 **Note**: The username and password shown above are placeholders and do not reflect the actual credentials used.
 
 By isolating lab access to a separate account, I now have a secure and controlled environment for running SSH-related experiments without impacting my primary Windows session.
@@ -119,6 +112,8 @@ After entering the password for the SSH test user, I was successfully connected 
 While connected to Windows via SSH from Ubuntu, I decided to test **SFTP from Windows to Ubuntu** to further build hands-on knowledge around secure file transfers in a cross-platform environment.
 
 Although SFTP itself is a straightforward protocol, I encountered a few issues during setup, which turned out to be great learning opportunities. Each problem helped me gain a better understanding of SSH and better prepare for similar issues in the future.
+
+---
 
 ### 🧪 Troubleshooting & Fixes:
 
@@ -164,7 +159,7 @@ sudo ssh-keygen -A
 ```
 After generating the host keys, the SSH service started successfully.
 
-3. Eort 22 Timeout When Connecting from Windows
+3. Port 22 Timeout When Connecting from Windows
 After confirming that SSH was running on Ubuntu and reconnecting to Windows, I attempted to open an SFTP session from Windows to Ubuntu, but received a **"Port 22 connection timed out"** error.
 
 The root cause turned out to be that my Ubuntu Desktop VM was configured to use NAT mode in VirtualBox. NAT mode isolates the VM behind a virtual NAT interface, blocking direct inbound connections from the host system or other devices on the LAN.
@@ -183,25 +178,26 @@ The test succeeded, which confirms the fix.
 
 ![Linux Port 22 Success](./screenshots/07_Windows_port_22_success.png)
 
+---
 
-### 📁  SFTP Process (Windows → Ubuntu)
+### 📁 SFTP Process (Windows → Ubuntu)
 
 Once SSH connectivity was confirmed between the two systems, I performed a secure file transfer from my Windows 11 PC to my Ubuntu Desktop using SFTP. Here’s a step-by-step breakdown of the process:
 
 1. Created a test file on the Windows system
 To simulate a basic transfer scenario, I first created a simple text file using PowerShell. This file served as the content I wanted to upload to my Ubuntu machine:
 
-   ```powershell
-   echo "This file was sent from Windows to Ubuntu Desktop via SFTP" > test_sftp_from_windows.txt
-   ```
+```powershell
+echo "This file was sent from Windows to Ubuntu Desktop via SFTP" > test_sftp_from_windows.txt
+```
 ![Create Text File](./screenshots/08_sftp_create_txt.png)
 
 2. Opened an SFTP session from Windows to Ubuntu
 Still within my SSH session on Windows, I initiated an SFTP connection to my Ubuntu Desktop using the built-in SFTP command-line tool. I specified the IP address and username of the Ubuntu machine:
 
-   ```powershell
-   sftp user@192.xxx.xxx.xxx
-   ```
+```powershell
+sftp user@192.xxx.xxx.xxx
+```
 
 After entering the correct password, the connection to the Ubuntu SFTP server was established successfully. 
 
@@ -222,7 +218,9 @@ To ensure the file was successfully transferred, I checked the target directory 
 
 The file `test_sftp_from_windows.txt` was present, confirming that the SFTP transfer from Windows to Ubuntu had completed successfully.
 
-📝 Conclusion
+---
+
+# 📝 Conclusion
 This project allowed me to gain valuable hands-on experience with configuring and using OpenSSH on both Windows and Linux platforms. Throughout the process, I successfully accomplished the following:
 
 - Enabled and secured SSH access on a Windows 11 Pro system without enabling auto-start, reducing unnecessary exposure in a home lab environment.
