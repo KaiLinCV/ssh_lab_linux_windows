@@ -1,6 +1,6 @@
 # 🔐 Cross-Platform SSH Lab: Linux and Windows
 
-This project demonstrates how to set up and use SSH (Secure Shell) across both Linux and Windows environments. My goal for this lab is to get hands-on experience with secure remote access, user authentication, basic SSH hardening, and file transfer operations — essential tasks in both system administration and cybersecurity roles.
+This project demonstrates how to set up and use SSH (Secure Shell) across both Linux and Windows environments. My goal for this lab is to get hands-on experience with secure remote access, user authentication, basic SSH hardening, and file transfer operations. These are essential tasks in both system administration and cybersecurity roles.
 
 ---
 
@@ -40,9 +40,7 @@ ssh-lab/
 │   ├── linux-ssh-hardening.md
 └── windows/
     ├── screenshots/
-    ├── openssh-installation.md
-    ├── powershell-ssh.md
-    └── putty-usage.md
+    └── windows_ssh_setup_and_sftp.md
 
 ```
 
